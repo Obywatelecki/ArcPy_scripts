@@ -2,7 +2,7 @@ import arcpy
 
 database = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/data.gdb"
 arcpy.env.workspace = database
-arcpy.env.OverwriteOutput = True
+arcpy.env.OverwriteOutput = 1
 
 radius = 100
 inPath = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/HeatMap_knajpy.mxd"
@@ -19,18 +19,23 @@ cellSize = 30
 
 arcpy.CheckOutExtension("Spatial")
 
-outKernelDenisty = arcpy.sa.KernelDensity(inFeatures,
-                                          popField,
-                                          cellSize,
-                                          radius,
+kd = arcpy.sa.KernelDensity(inFeatures,
+                            popField,
+                            cellSize,
+                            radius,
                                           "SQUARE_KILOMETERS")
 
-outKernelDenisty.save("D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/data.gdb/kd_test")
+kd.save(database+ "//" + "kd_test")
+arcpy.BuildPyramids_management("kd_test")
+arcpy.mapping.AddLayer(df, "kd_test", "BOTTOM")
+
+for lyr in arcpy.mapping.ListLayers(mxd):
+    print lyr
 
 ##TO DO
 
 '''
-buildPyramides
+
 addLayer
 setSymbology
 exportMap
