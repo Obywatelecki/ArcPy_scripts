@@ -1,21 +1,52 @@
 import arcpy
 
-radius = 100
+database = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/data.gdb"
+arcpy.env.workspace = database
+arcpy.env.OverwriteOutput = True
 
+radius = 100
 inPath = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/HeatMap_knajpy.mxd"
 outPath = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/_genMaps"
-outFileName = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/_genMaps/HeatMap_radius_" + str(radius) + ".jpg"
-
+outKDName = str(database) + str(radius)
+outMapName = "D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/_genMaps/HeatMap_radius_" + str(radius) + ".jpg"
 mxd = arcpy.mapping.MapDocument(inPath)
-df = arcpy.mapping.ListDataFrames(mxd)
+df = arcpy.mapping.ListDataFrames(mxd)[0]
 
+##Kernel Density variables
+inFeatures = "knajpy"
+popField = "NONE"
+cellSize = 30
+
+arcpy.CheckOutExtension("Spatial")
+
+outKernelDenisty = arcpy.sa.KernelDensity(inFeatures,
+                                          popField,
+                                          cellSize,
+                                          radius,
+                                          "SQUARE_KILOMETERS")
+
+outKernelDenisty.save("D:/GD/WGiSR/_Konferencje/Plener 2018/heatMap/data.gdb/kd_test")
+
+##TO DO
+
+'''
+buildPyramides
+addLayer
+setSymbology
+exportMap
+
+makeItLooped :-)
+
+'''
+
+
+'''
 for lyr in arcpy.mapping.ListLayers(mxd):
     print lyr
 
 arcpy.mapping.ExportToJPEG(mxd, outFileName)
 
 
-'''
 cellSize = 10
 radius = 0
 x = 1
