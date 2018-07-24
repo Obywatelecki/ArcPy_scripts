@@ -1,15 +1,20 @@
 from collections import Counter
-import re
-
+import itertools
 
 longFile = "D:/Java/JavaHomework_2/python.html"
 shortFile = "D:/data.txt"
-ultraLongFile = "D:/data1.txt"
+ultraShortFile = "D:/data1.txt"
 
-f = open(shortFile, 'r')
+f = open(ultraShortFile, 'r')
+
+arr = []
 
 for lines in f.readlines():
     words = lines.split()
-    print Counter(words).most_common()[0]
+    for word in words:
+        arr.append(word)
+
+print Counter(arr).most_common()[0]
+
 
 f.close()
